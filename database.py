@@ -1,24 +1,20 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-SQLALCAMY_DATABASE_URL = "sqlite:///./blog.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./blog.db"
 
-enngine = create_engine(
-    SQLALCAMY_DATABASE_URL,
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
     connect_args={"check_same_thread": False},
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=enngine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 class Base(DeclarativeBase):
     pass
 
+
 def get_db():
-   with SessionLocal() as db:
-    try:
+    with SessionLocal() as db:
         yield db
-    finally:
-        db.close()
-
-
-

@@ -1,7 +1,10 @@
-# Fix localhost:8000/posts/1 Not Displaying
+# Fixing 500 Internal Server Error - Ongoing
 
-## Steps:
-- [x] 1. Fix main.py variable name bug (posts → post)
-- [x] 2. Populate templates/post.html with post content display
-- [x] 3. Test server restart and page load
-- [x] 4. Complete
+## Plan Steps:
+1. [x] Create TODO.md with progress tracking
+2. [ ] Edit models.py: Add proper datetime/UTC import to fix NameError
+
+4. [ ] Verify API endpoints (e.g., /api/posts)
+5. [ ] Check database schema with sqlite3 blog.db ".schema"
+6. [ ] If issues persist: Capture server logs and debug further
+7. [ ] Complete: attempt_completion
