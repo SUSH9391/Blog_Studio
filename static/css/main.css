@@ -1,28 +1,55 @@
 :root {
   /* Fonts */
-  --font-heading: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
-    sans-serif;
-  --font-body: "Nunito", system-ui, -apple-system, BlinkMacSystemFont,
-    sans-serif;
+  --font-heading: "Montserrat", system-ui, -apple-system, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, sans-serif;
 
-  /* Colors */
-  --color-bg-body: #fafafa;
-  --color-bg-content: #ffffff;
-  --color-text-primary: #333333;
-  --color-text-heading: #444444;
-  --color-steel: #527c9f;
-  --color-nav-link: #cbd5db;
-  --color-nav-link-hover: #ffffff;
-  --color-link-hover: #428bca;
-  --color-border: #dddddd;
-  --color-border-light: #e3e3e3;
+  /* Colors Light Mode (Reddit inspired) */
+  --color-bg-body: #DAE0E6;
+  --color-bg-content: #FFFFFF;
+  --color-bg-nav: #FFFFFF;
+  --color-bg-hover: #F6F7F8;
+  --color-bg-vote: #F8F9FA;
+  
+  --color-text-primary: #1c1c1c;
+  --color-text-secondary: #787C7E;
+  --color-text-heading: #222222;
+  
+  --color-border: #CCCCCC;
+  --color-border-light: #EDEFF1;
+  --color-border-hover: #898989;
 
-  /* Spacing */
-  --spacing-xl: 5rem;
+  --color-accent: #4F46E5; /* Unique Indigo Accent */
+  --color-accent-hover: #4338CA;
+  --color-upvote: #6366F1;
+  --color-downvote: #818CF8;
 
-  /* Sizing */
-  --article-img-size: 4rem; /* 64px converted to rem */
-  --account-img-size: 7.813rem; /* 125px converted to rem */
+  --color-nav-link: #1c1c1c;
+  --color-nav-link-hover: #000000;
+
+  /* Spacing & Sizing */
+  --spacing-nav-height: 48px;
+  --article-img-size: 20px; /* Smaller avatar for Reddit style */
+  --account-img-size: 125px;
+}
+
+/* Dark Mode Colors */
+[data-bs-theme="dark"] {
+  --color-bg-body: #030303;
+  --color-bg-content: #1A1A1B;
+  --color-bg-nav: #1A1A1B;
+  --color-bg-hover: #272729;
+  --color-bg-vote: #1A1A1B;
+  
+  --color-text-primary: #D7DADC;
+  --color-text-secondary: #818384;
+  --color-text-heading: #D7DADC;
+  
+  --color-border: #343536;
+  --color-border-light: #343536;
+  --color-border-hover: #D7DADC;
+
+  --color-nav-link: #D7DADC;
+  --color-nav-link-hover: #FFFFFF;
 }
 
 /* Base Styles */
@@ -30,266 +57,278 @@ body {
   font-family: var(--font-body);
   background: var(--color-bg-body);
   color: var(--color-text-primary);
-}
-
-main {
-  padding-top: var(--spacing-xl);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  color: var(--color-text-heading);
-}
-
-.navbar-brand {
-  font-family: var(--font-heading);
+  margin-top: calc(var(--spacing-nav-height) + 1rem); /* Space for fixed nav */
 }
 
 a {
   text-decoration: none;
+  color: var(--color-text-primary);
+}
+a:hover {
+  text-decoration: underline;
 }
 
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--color-link-hover);
-  outline-offset: 2px;
+/* Navbar */
+.site-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
+.site-header .navbar {
+  background-color: var(--color-bg-nav) !important;
+  border-bottom: 1px solid var(--color-border);
+  height: var(--spacing-nav-height);
+  padding: 0 1rem;
+}
+.site-header .navbar-brand {
+  font-family: var(--font-heading);
+  color: var(--color-accent) !important;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+}
+.search-bar-stub {
+  background-color: var(--color-bg-hover);
+  border: 1px solid var(--color-border-light);
+  border-radius: 20px; /* rounded search bar */
+  padding: 6px 16px;
+  color: var(--color-text-secondary);
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s, background-color 0.2s;
+  font-size: 14px;
+}
+.search-bar-stub:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-bg-content);
+  cursor: text;
+}
+.search-bar-stub svg {
+  margin-right: 8px;
+  fill: currentColor;
 }
 
-/* Headers and Navigation */
-.bg-steel {
-  background-color: var(--color-steel);
+/* Layout Grid */
+.reddit-layout {
+  display: flex;
+  justify-content: center;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.reddit-main {
+  width: 100%;
+  max-width: 640px;
+}
+.reddit-sidebar {
+  width: 312px;
+  margin-left: 24px;
+  display: none;
+}
+@media (min-width: 992px) {
+  .reddit-sidebar {
+    display: block;
+  }
 }
 
-.site-header .navbar-nav .nav-link {
-  color: var(--color-nav-link);
-  transition: color 0.2s ease-in-out;
-}
-
-.site-header .navbar-nav .nav-link:hover,
-.site-header .navbar-nav .nav-link:focus {
-  color: var(--color-nav-link-hover);
-}
-
-.site-header .navbar-nav .nav-link.active {
-  font-weight: 600;
-}
-
-/* Content Sections */
-.content-section {
+/* Reddit Card Style */
+.reddit-card {
   background: var(--color-bg-content);
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05);
-  transition: box-shadow 0.15s ease, transform 0.15s ease,
-    border-color 0.15s ease;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  transition: border-color 0.15s ease;
+  overflow: hidden;
+}
+.reddit-card:hover {
+  border-color: var(--color-border-hover);
 }
 
-.content-section:hover {
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1);
-  border-color: var(--color-border-light);
+/* Vote Column */
+.vote-col {
+  width: 40px;
+  background-color: var(--color-bg-vote);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid transparent;
+}
+.vote-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.vote-btn:hover {
+  background-color: var(--color-border-light);
+}
+.vote-btn.upvote:hover { color: var(--color-upvote); }
+.vote-btn.downvote:hover { color: var(--color-downvote); }
+.vote-score {
+  font-size: 12px;
+  font-weight: 700;
+  margin: 4px 0;
+  color: var(--color-text-primary);
 }
 
-/* Articles */
-.article-title {
-  color: var(--color-text-heading);
-  transition: color 0.2s ease-in-out;
+/* Card Content */
+.card-content {
+  padding: 8px;
+  flex-grow: 1;
 }
-
-a.article-title:hover,
-a.article-title:focus {
-  color: var(--color-link-hover);
-  text-decoration: none;
+.card-meta {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
 }
-
-.article-content {
-  white-space: pre-line;
-  font-size: 1.25rem;
+.card-meta a.community-link {
+  color: var(--color-text-primary);
+  font-weight: 700;
+  margin-right: 4px;
 }
-
-.article-img {
+.card-meta a:hover {
+  text-decoration: underline;
+}
+.card-avatar {
   height: var(--article-img-size);
   width: var(--article-img-size);
-  flex-shrink: 0;
+  border-radius: 50%;
+  margin-right: 6px;
   object-fit: cover;
-  border: 1px solid var(--color-border-light);
-  box-shadow: 0 0 0 2px var(--color-bg-content);
 }
-
-.article-metadata {
-  padding-bottom: 0.063rem; /* 1px converted to rem */
-  border-bottom: 1px solid var(--color-border-light);
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-heading);
+  margin-bottom: 8px;
 }
-
-.article-metadata a {
-  transition: color 0.2s ease-in-out;
+.card-title-link {
+  color: var(--color-text-heading);
 }
-
-.article-metadata a:hover,
-.article-metadata a:focus {
+.card-title-link:hover {
+  text-decoration: none;
+}
+.card-body-text {
+  font-size: 14px;
+  line-height: 21px;
+  word-break: break-word;
   color: var(--color-text-primary);
+  margin-bottom: 8px;
+  white-space: pre-line;
+}
+
+/* Action Bar */
+.action-bar {
+  display: flex;
+  align-items: center;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+.action-btn:hover {
+  background-color: var(--color-bg-hover);
+}
+.action-btn svg {
+  margin-right: 6px;
+  fill: currentColor;
+}
+
+/* Sidebar Widget */
+.sidebar-widget {
+  background: var(--color-bg-content);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.sidebar-widget-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Utility buttons */
+.btn-reddit {
+  background-color: var(--color-accent);
+  color: #FFF !important;
+  border-radius: 9999px; /* Pill */
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  padding: 6px 16px;
+  transition: opacity 0.2s;
+}
+.btn-reddit:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+.btn-reddit-outline {
+  background-color: transparent;
+  color: var(--color-accent) !important;
+  border: 1px solid var(--color-accent);
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 16px;
+  transition: background-color 0.2s;
+}
+.btn-reddit-outline:hover {
+  background-color: rgba(79, 70, 229, 0.1);
   text-decoration: none;
 }
 
-.article-svg {
-  width: 1.563rem; /* 25px converted to rem */
-  height: 1.563rem;
-  vertical-align: middle;
-}
-
-/* Account/Profile */
+/* Profile Specific */
 .account-img {
   height: var(--account-img-size);
   width: var(--account-img-size);
   object-fit: cover;
 }
 
-.account-heading {
-  font-size: 2.5rem;
+/* Forms & Modals overrides */
+.form-control {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+.form-control:focus {
+  background-color: var(--color-bg-content);
+  border-color: var(--color-accent);
+  box-shadow: none;
+  color: var(--color-text-primary);
+}
+.modal-content {
+  background-color: var(--color-bg-content);
+  color: var(--color-text-primary);
+}
+.modal-header, .modal-footer {
+  border-color: var(--color-border-light);
 }
 
-.file-input-sm {
-  max-width: 300px;
-}
-
-/* Custom Button Colors - Light Mode */
-.btn-outline-primary {
-  --bs-btn-color: #527c9f;
-  --bs-btn-border-color: #527c9f;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #466a87;
-  --bs-btn-hover-border-color: #3f6179;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #3f6179;
-  --bs-btn-active-border-color: #3a5b72;
-}
-
-.btn-outline-secondary {
-  --bs-btn-color: #495057;
-  --bs-btn-border-color: #6c757d;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #5a6268;
-  --bs-btn-hover-border-color: #545b62;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #545b62;
-  --bs-btn-active-border-color: #4e555b;
-}
-
-.btn-outline-danger {
-  --bs-btn-color: #a85b5b;
-  --bs-btn-border-color: #a85b5b;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #924e4e;
-  --bs-btn-hover-border-color: #874848;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #874848;
-  --bs-btn-active-border-color: #7c4242;
-}
-
-.btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #527c9f;
-  --bs-btn-border-color: #527c9f;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #466a87;
-  --bs-btn-hover-border-color: #3f6179;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #3f6179;
-  --bs-btn-active-border-color: #3a5b72;
-}
-
-.btn-danger {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #a85b5b;
-  --bs-btn-border-color: #a85b5b;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #924e4e;
-  --bs-btn-hover-border-color: #874848;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #874848;
-  --bs-btn-active-border-color: #7c4242;
-}
-
-/* Custom Button Colors - Dark Mode */
-[data-bs-theme="dark"] .btn-outline-primary {
-  --bs-btn-color: #8aadc8;
-  --bs-btn-border-color: #8aadc8;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #8aadc8;
-  --bs-btn-hover-border-color: #9fbdd4;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #9fbdd4;
-  --bs-btn-active-border-color: #b4cde0;
-}
-
-[data-bs-theme="dark"] .btn-outline-secondary {
-  --bs-btn-color: #b8bfc6;
-  --bs-btn-border-color: #8a939b;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #b8bfc6;
-  --bs-btn-hover-border-color: #adb5bd;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #adb5bd;
-  --bs-btn-active-border-color: #a2aab2;
-}
-
-[data-bs-theme="dark"] .btn-outline-danger {
-  --bs-btn-color: #d89090;
-  --bs-btn-border-color: #d89090;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #d89090;
-  --bs-btn-hover-border-color: #e0a8a8;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #e0a8a8;
-  --bs-btn-active-border-color: #e8bcbc;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .account-heading {
-    font-size: 2rem;
-  }
-
-  .article-img {
-    height: 3rem;
-    width: 3rem;
-  }
-}
-
-/* Dark Mode Features */
-
-[data-bs-theme="dark"] {
-  --color-bg-body: #1a1a1a;
-  --color-bg-content: #2d2d2d;
-  --color-text-primary: #e0e0e0;
-  --color-text-heading: #f0f0f0;
-  --color-border: #404040;
-  --color-border-light: #4a4a4a;
-}
-
-[data-bs-theme="dark"] .content-section {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-[data-bs-theme="dark"] article.content-section:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-/* Custom Modal Colors */
-.modal-header.bg-success {
-  background-color: #4a7c5d !important;
-}
-
-.modal-header.bg-danger {
-  background-color: #a85b5b !important;
-}
-
-/* Ensure modal header text stays white in both themes */
-.modal-header.bg-success .modal-title,
-.modal-header.bg-danger .modal-title {
-  color: #ffffff !important;
+/* Dark Theme Overrides for standard Bootstrap */
+[data-bs-theme="dark"] .modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }

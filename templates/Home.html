@@ -2,25 +2,43 @@
 {% block content %}
     <div id="postsContainer">
         {% for post in posts %}
-            <article class="content-section py-3 px-4 mb-4">
-                <div class="d-flex align-items-start gap-4">
-                    <img class="rounded-circle article-img flex-shrink-0"
-                         src="{{ post.author.image_path }}"
-                         alt="{{ post.author.username }}'s profile picture"
-                         width="64"
-                         height="64"
-                         loading="lazy">
-                    <div class="flex-grow-1">
-                        <div class="article-metadata mb-2">
-                            <a class="me-2"
-                               href="{{ url_for("user_posts", user_id=post.author.id) }}">{{ post.author.username }}</a>
-                            <small class="text-body-secondary">{{ post.date_posted.strftime("%B %d, %Y") }}</small>
-                        </div>
-                        <h2>
-                            <a class="article-title"
-                               href="{{ url_for("post_page", post_id=post.id) }}">{{ post.title }}</a>
-                        </h2>
-                        <p class="article-content">{{ post.content }}</p>
+            <article class="reddit-card">
+                <!-- Vote Column -->
+                <div class="vote-col">
+                    <button class="vote-btn upvote">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4 3 15h6v5h6v-5h6z"/></svg>
+                    </button>
+                    <span class="vote-score">0</span>
+                    <button class="vote-btn downvote">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m12 20 9-11h-6V4H9v5H3z"/></svg>
+                    </button>
+                </div>
+                <!-- Content Area -->
+                <div class="card-content">
+                    <div class="card-meta">
+                        <img class="card-avatar" src="{{ post.author.image_path }}" alt="avatar" loading="lazy">
+                        <a href="{{ url_for('user_posts', user_id=post.author.id) }}" class="community-link">b/{{ post.author.username }}</a>
+                        <span>• Posted by u/{{ post.author.username }} {{ post.date_posted.strftime("%B %d, %Y") }}</span>
+                    </div>
+                    <h2 class="card-title">
+                        <a class="card-title-link" href="{{ url_for('post_page', post_id=post.id) }}">{{ post.title }}</a>
+                    </h2>
+                    <div class="card-body-text">
+                        {{ post.content }}
+                    </div>
+                    <div class="action-bar">
+                        <a href="{{ url_for('post_page', post_id=post.id) }}" class="action-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.82 1.62 5.3 4.14 6.89l-.26 3.03a1.002 1.002 0 0 0 1.5.95l3.4-1.9c1.02.28 2.08.43 3.22.43 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"></path></svg>
+                            Comments
+                        </a>
+                        <button class="action-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 8h-4V4H6v4H2v2h4v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h4v-2h-4V8z"></path></svg>
+                            Share
+                        </button>
+                        <button class="action-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"></path></svg>
+                            Save
+                        </button>
                     </div>
                 </div>
             </article>
@@ -28,7 +46,7 @@
     </div>
     {% if has_more %}
         <div class="text-center mb-4">
-            <button type="button" class="btn btn-outline-primary" id="loadMoreBtn">Load More Posts</button>
+            <button type="button" class="btn btn-reddit-outline" id="loadMoreBtn">Load More Posts</button>
         </div>
     {% endif %}
 {% endblock content %}
@@ -47,19 +65,42 @@
   // Create HTML for a single post (matching server-rendered structure)
   function createPostHTML(post) {
     return `
-      <article class="content-section py-3 px-4 mb-4">
-        <div class="d-flex align-items-start gap-4">
-          <img class="rounded-circle article-img flex-shrink-0" src="${escapeHtml(post.author.image_path)}" alt="${escapeHtml(post.author.username)}'s profile picture" width="64" height="64" loading="lazy">
-          <div class="flex-grow-1">
-            <div class="article-metadata mb-2">
-              <a class="me-2" href="/users/${post.author.id}/posts">${escapeHtml(post.author.username)}</a>
-              <small class="text-body-secondary">${formatDate(post.date_posted)}</small>
+      <article class="reddit-card">
+        <div class="vote-col">
+            <button class="vote-btn upvote">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4 3 15h6v5h6v-5h6z"/></svg>
+            </button>
+            <span class="vote-score">0</span>
+            <button class="vote-btn downvote">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m12 20 9-11h-6V4H9v5H3z"/></svg>
+            </button>
+        </div>
+        <div class="card-content">
+            <div class="card-meta">
+                <img class="card-avatar" src="${escapeHtml(post.author.image_path)}" alt="avatar" loading="lazy">
+                <a href="/users/${post.author.id}/posts" class="community-link">b/${escapeHtml(post.author.username)}</a>
+                <span>• Posted by u/${escapeHtml(post.author.username)} ${formatDate(post.date_posted)}</span>
             </div>
-            <h2>
-              <a class="article-title" href="/posts/${post.id}">${escapeHtml(post.title)}</a>
+            <h2 class="card-title">
+                <a class="card-title-link" href="/posts/${post.id}">${escapeHtml(post.title)}</a>
             </h2>
-            <p class="article-content">${escapeHtml(post.content)}</p>
-          </div>
+            <div class="card-body-text">
+                ${escapeHtml(post.content)}
+            </div>
+            <div class="action-bar">
+                <a href="/posts/${post.id}" class="action-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.82 1.62 5.3 4.14 6.89l-.26 3.03a1.002 1.002 0 0 0 1.5.95l3.4-1.9c1.02.28 2.08.43 3.22.43 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"></path></svg>
+                    Comments
+                </a>
+                <button class="action-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 8h-4V4H6v4H2v2h4v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h4v-2h-4V8z"></path></svg>
+                    Share
+                </button>
+                <button class="action-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"></path></svg>
+                    Save
+                </button>
+            </div>
         </div>
       </article>
     `;
