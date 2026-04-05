@@ -84,7 +84,21 @@ async def run_async_migrations() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
-    asyncio.run(run_async_migrations())
+    # Use sync engine for alembic revision --autogenerate compat during development
+    from sqlalchemy import create_engine
+    sync_url = settings.database_url.replace('postgresql+asyncpg://', 'postgresql://')
+    if "sslmode=" not in sync_url:
+        sync_url += "?sslmode=require" if "?" not in sync_url else "&sslmode=require"
+    sync_engine = create_engine(sync_url)
+    connectable = sync_engine
+    
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection, 
+            target_metadata=target_metadata
+        )
+        with context.begin_transaction():
+            context.run_migrations()
 
 
 if context.is_offline_mode():

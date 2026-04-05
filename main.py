@@ -19,15 +19,64 @@ from config import settings
 from database import engine, get_db
 from routers import posts, users
 
+import logging
+import traceback
+from fastapi.responses import JSONResponse
+
+# Set up basic logging
+logging.basicConfig(level=logging.INFO)
+# Capture SQLAlchemy engine interactions at DEBUG level
+logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
+# Capture Uvicorn errors
+logging.getLogger("uvicorn.error").setLevel(logging.DEBUG)
+
+# Supabase sync connection test
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
+
+load_dotenv()
+
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
+
+if USER and PASSWORD and HOST and PORT and DBNAME and PORT != 'None':
+    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    engine = create_engine(DATABASE_URL)
+    # engine = create_engine(DATABASE_URL, poolclass=NullPool)
+    try:
+        with engine.connect() as connection:
+            logging.info("Supabase sync connection successful!")
+    except Exception as e:
+        logging.error(f"Supabase sync connection failed: {e}")
+else:
+    logging.warning("Supabase sync test skipped: missing .env vars (user, password, host, port, dbname)")
+
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     yield
-    # Shutdown
-    await engine.dispose()
+    # Shutdown - safe dispose (from database module)
+    from database import engine
+    if engine is not None:
+        await engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
+
+@app.middleware("http")
+async def log_server_errors(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as exc:
+        print(f"\n--- 💥 UNHANDLED EXCEPTION 💥 ---")
+        print(f"Request URL: {request.url.path}")
+        traceback.print_exc()
+        print("---------------------------------\n")
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/media", StaticFiles(directory="media"), name="media")

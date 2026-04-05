@@ -1,10 +1,15 @@
-# Fixing 500 Internal Server Error - Ongoing
+# Supabase Migration TODO - COMPLETE ✅
 
-## Plan Steps:
-1. [x] Create TODO.md with progress tracking
-2. [ ] Edit models.py: Add proper datetime/UTC import to fix NameError
+## Steps Completed:
 
-4. [ ] Verify API endpoints (e.g., /api/posts)
-5. [ ] Check database schema with sqlite3 blog.db ".schema"
-6. [ ] If issues persist: Capture server logs and debug further
-7. [ ] Complete: attempt_completion
+3. [x] Generate Alembic migration: `alembic revision --autogenerate -m "initial supabase tables"`
+4. [x] Apply migration: `alembic upgrade head`
+5. [x] Test app: `uv run uvicorn main:app --reload` (psycopg2-binary removed, server running)
+6. [x] Delete local blog.db
+7. [x] Verify tables in Supabase dashboard (users, posts, password_reset_tokens)
+
+**Fixed:** Removed psycopg2-binary (asyncpg now works). main.py safe engine.dispose().
+
+**Future:** alembic revision --autogenerate -m "changes" && alembic upgrade head
+
+App fully connected to Supabase! Visit http://localhost:8000

@@ -29,8 +29,23 @@ from auth import (
 )
 from config import settings
 from database import get_db
-from email_utils import send_password_reset_email
-from image_utils import delete_profile_image, process_profile_image
+from supabase import create_client, Client
+from config import settings
+from schemas import (
+    ChangePasswordRequest,
+    ForgotPasswordRequest,
+    PaginatedPostsResponse,
+    PostResponse,
+    ResetPasswordRequest,
+    Token,
+    UserCreate,
+    UserPrivate,
+    UserPublic,
+    UserUpdate,
+)
+
+router = APIRouter()
+
 from schemas import (
     ChangePasswordRequest,
     ForgotPasswordRequest,
@@ -126,47 +141,24 @@ async def get_current_user(current_user: CurrentUser):
 @router.post("/forgot-password", status_code=status.HTTP_202_ACCEPTED)
 async def forgot_password(
     request_data: ForgotPasswordRequest,
-    background_tasks: BackgroundTasks,
-    db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    result = await db.execute(
-        select(models.User).where(
-            func.lower(models.User.email) == request_data.email.lower(),
-        ),
-    )
-    user = result.scalars().first()
-
-    if user:
-        await db.execute(
-            sql_delete(models.PasswordResetToken).where(
-                models.PasswordResetToken.user_id == user.id,
-            ),
+    supabase: Client = create_client(settings.supabase_url, settings.supabase_anon_key.get_secret_value())
+    try:
+        response = supabase.auth.api.reset_password_for_email(
+            request_data.email,
+            options={
+                "redirectTo": f"{settings.frontend_url}/reset-password"
+            }
         )
+        return {
+            "message": "If an account exists, password reset email sent from Supabase Auth.",
+        }
+    except Exception as e:
+        return {
+            "message": "Request processed (check Supabase logs if issue).",
+            "error": str(e)
+        }
 
-        token = generate_reset_token()
-        token_hash = hash_reset_token(token)
-        expires_at = datetime.now(UTC) + timedelta(
-            minutes=settings.reset_token_expire_minutes,
-        )
-
-        reset_token = models.PasswordResetToken(
-            user_id=user.id,
-            token_hash=token_hash,
-            expires_at=expires_at,
-        )
-        db.add(reset_token)
-        await db.commit()
-
-        background_tasks.add_task(
-            send_password_reset_email,
-            to_email=user.email,
-            username=user.username,
-            token=token,
-        )
-
-    return {
-        "message": "If an account exists with this email, you will receive password reset instructions.",
-    }
 
 
 @router.post("/reset-password", status_code=status.HTTP_200_OK)
