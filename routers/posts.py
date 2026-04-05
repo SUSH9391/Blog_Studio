@@ -1,14 +1,18 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Form, UploadFile, File
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from typing import List
+import pprint
 
 import models
 from auth import CurrentUser
 from config import settings
 from database import get_db
+from schemas import PaginatedPostsResponse, PostCreate, PostResponse, PostUpdate
+from media_utils import process_post_attachment
 from schemas import PaginatedPostsResponse, PostCreate, PostResponse, PostUpdate
 
 router = APIRouter()
@@ -50,19 +54,57 @@ async def get_posts(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_post(
-    post: PostCreate,
     current_user: CurrentUser,
     db: Annotated[AsyncSession, Depends(get_db)],
+    title: str = Form(..., min_length=1, max_length=100),
+    content: str = Form(..., min_length=1),
+    attachments: List[UploadFile] = File(default=[]),
 ):
+    media_paths = []
+    if attachments:
+        for file in attachments:
+            if file.filename:  # Filter out empty form submissions
+                path = process_post_attachment(file)
+                media_paths.append(path)
+
     new_post = models.Post(
-        title=post.title,
-        content=post.content,
+        title=title,
+        content=content,
         user_id=current_user.id,
+        media_paths=media_paths
     )
     db.add(new_post)
     await db.commit()
     await db.refresh(new_post, attribute_names=["author"])
     return new_post
+
+from pydantic import BaseModel
+class VoteSchema(BaseModel):
+    action: str # "upvote", "downvote", "clear"
+
+@router.post("/{post_id}/vote", response_model=PostResponse)
+async def vote_post(
+    post_id: int,
+    vote: VoteSchema,
+    current_user: CurrentUser,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    # A simple implementation for vote action increment/decrement
+    # Note: production requires a tracking table per user-vote 
+    # to enforce 1 vote per user. This is a simplified counter.
+    result = await db.execute(select(models.Post).options(selectinload(models.Post.author)).where(models.Post.id == post_id))
+    post = result.scalars().first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+        
+    if vote.action == "upvote":
+        post.upvotes += 1
+    elif vote.action == "downvote":
+        post.downvotes += 1
+        
+    await db.commit()
+    await db.refresh(post)
+    return post
 
 
 @router.get("/{post_id}", response_model=PostResponse)

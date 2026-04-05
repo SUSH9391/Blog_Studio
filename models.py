@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -22,6 +22,11 @@ class User(Base):
     )
 
     posts: Mapped[list[Post]] = relationship(
+        back_populates="author",
+        cascade="all, delete-orphan",
+    )
+
+    comments: Mapped[list[Comment]] = relationship(
         back_populates="author",
         cascade="all, delete-orphan",
     )
@@ -54,8 +59,50 @@ class Post(Base):
         default=lambda: datetime.now(UTC),
     )
     likes: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    upvotes: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    downvotes: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    media_paths: Mapped[list[str]] = mapped_column(JSON, default=list, server_default="[]")
 
     author: Mapped[User] = relationship(back_populates="posts")
+    comments: Mapped[list[Comment]] = relationship(
+        back_populates="post",
+        cascade="all, delete-orphan",
+    )
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    date_posted: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+    post_id: Mapped[int] = mapped_column(
+        ForeignKey("posts.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    parent_id: Mapped[int | None] = mapped_column(
+        ForeignKey("comments.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+
+    post: Mapped[Post] = relationship(back_populates="comments")
+    author: Mapped[User] = relationship(back_populates="comments")
+    replies: Mapped[list[Comment]] = relationship(
+        back_populates="parent",
+        cascade="all, delete-orphan",
+    )
+    parent: Mapped[Comment | None] = relationship(
+        back_populates="replies",
+        remote_side=[id],
+    )
 
 
 class PasswordResetToken(Base):

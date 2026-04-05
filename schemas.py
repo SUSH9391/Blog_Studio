@@ -55,6 +55,25 @@ class PostResponse(PostBase):
     id: int
     user_id: int
     date_posted: datetime
+    upvotes: int
+    downvotes: int
+    media_paths: list[str] | None = None
+    author: UserPublic
+
+class CommentBase(BaseModel):
+    content: str = Field(min_length=1, max_length=1000)
+
+class CommentCreate(CommentBase):
+    parent_id: int | None = None
+
+class CommentResponse(CommentBase):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    user_id: int
+    post_id: int
+    parent_id: int | None
+    date_posted: datetime
     author: UserPublic
 
 
