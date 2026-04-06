@@ -91,7 +91,7 @@ async def log_server_errors(request: Request, call_next):
         print(f"Request URL: {request.url.path}")
         traceback.print_exc()
         print("---------------------------------\n")
-        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error", "traceback": traceback.format_exc()})
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
