@@ -1,3 +1,10 @@
+// Fix ARIA focus warning when modals close programmatically
+document.addEventListener('hide.bs.modal', function (event) {
+  if (document.activeElement && event.target.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+});
+
 // Error message extraction from API responses
 export function getErrorMessage(error) {
   if (typeof error.detail === "string") {
