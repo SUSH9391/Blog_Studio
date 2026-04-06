@@ -27,6 +27,7 @@ from auth import (
     hash_reset_token,
     verify_password,
 )
+from image_utils import process_profile_image, delete_profile_image
 from config import settings
 from database import get_db
 from supabase import create_client, Client
@@ -402,7 +403,7 @@ async def upload_profile_picture(
         )
 
     try:
-        new_filename = await run_in_threadpool(process_profile_image, content)
+        new_filename = await run_in_threadpool(process_profile_image, content, current_user.username)
     except UnidentifiedImageError as err:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -415,7 +416,7 @@ async def upload_profile_picture(
     await db.commit()
     await db.refresh(current_user)
 
-    if old_filename:
+    if old_filename and old_filename != new_filename:
         delete_profile_image(old_filename)
 
     return current_user

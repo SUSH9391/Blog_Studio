@@ -1,13 +1,13 @@
 import uuid
 from io import BytesIO
-from pathlib import Path
 
 from PIL import Image, ImageOps
+from supabase import create_client, Client
+from config import settings
 
-PROFILE_PICS_DIR = Path("media/profile_pics")
+supabase: Client = create_client(settings.supabase_url, settings.supabase_anon_key.get_secret_value())
 
-
-def process_profile_image(content: bytes) -> str:
+def process_profile_image(content: bytes, username: str) -> str:
     with Image.open(BytesIO(content)) as original:
         img = ImageOps.exif_transpose(original)
 
@@ -16,12 +16,17 @@ def process_profile_image(content: bytes) -> str:
         if img.mode in ("RGBA", "LA", "P"):
             img = img.convert("RGB")
 
-        filename = f"{uuid.uuid4().hex}.jpg"
-        filepath = PROFILE_PICS_DIR / filename
+        buffer = BytesIO()
+        img.save(buffer, "JPEG", quality=85, optimize=True)
+        buffer.seek(0)
 
-        PROFILE_PICS_DIR.mkdir(parents=True, exist_ok=True)
+        filename = f"{username}.jpg"
 
-        img.save(filepath, "JPEG", quality=85, optimize=True)
+        supabase.storage.from_("avatar").upload(
+            path=filename,
+            file=buffer.read(),
+            file_options={"content-type": "image/jpeg", "x-upsert": "true"}
+        )
 
     return filename
 
@@ -30,6 +35,7 @@ def delete_profile_image(filename: str | None) -> None:
     if filename is None:
         return
 
-    filepath = PROFILE_PICS_DIR / filename
-    if filepath.exists():
-        filepath.unlink()
+    try:
+        supabase.storage.from_("avatar").remove([filename])
+    except Exception as e:
+        print(f"Error deleting image {filename}: {e}")
