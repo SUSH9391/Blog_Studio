@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     mail_password: SecretStr = SecretStr("")
     mail_from: str = "noreply@example.com"
     mail_use_tls: bool = True
-
+    frontend_url: str = "http://localhost:8000"
 
 
     supabase_url: str = ""

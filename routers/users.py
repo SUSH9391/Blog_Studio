@@ -28,6 +28,7 @@ from auth import (
     verify_password,
 )
 from image_utils import process_profile_image, delete_profile_image
+from email_utils import send_password_reset_email
 from config import settings
 from database import get_db
 from supabase import create_client, Client
@@ -142,23 +143,37 @@ async def get_current_user(current_user: CurrentUser):
 @router.post("/forgot-password", status_code=status.HTTP_202_ACCEPTED)
 async def forgot_password(
     request_data: ForgotPasswordRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    supabase: Client = create_client(settings.supabase_url, settings.supabase_anon_key.get_secret_value())
-    try:
-        response = supabase.auth.api.reset_password_for_email(
-            request_data.email,
-            options={
-                "redirectTo": f"{settings.frontend_url}/reset-password"
-            }
+    result = await db.execute(
+        select(models.User).where(func.lower(models.User.email) == request_data.email.lower())
+    )
+    user = result.scalars().first()
+    
+    if user:
+        token = generate_reset_token()
+        token_hash = hash_reset_token(token)
+        expires_at = datetime.now(UTC) + timedelta(minutes=settings.reset_token_expire_minutes)
+        
+        reset_token = models.PasswordResetToken(
+            user_id=user.id,
+            token_hash=token_hash,
+            expires_at=expires_at,
         )
-        return {
-            "message": "If an account exists, password reset email sent from Supabase Auth.",
-        }
-    except Exception as e:
-        return {
-            "message": "Request processed (check Supabase logs if issue).",
-            "error": str(e)
-        }
+        db.add(reset_token)
+        await db.commit()
+        
+        try:
+            await send_password_reset_email(to_email=user.email, username=user.username, token=token)
+        except Exception as e:
+            return {
+                "message": "Reset token generated, but failed to send email. Check SMTP settings.",
+                "error": str(e)
+            }
+
+    return {
+        "message": "If an account exists, a password reset email has been sent.",
+    }
 
 
 
