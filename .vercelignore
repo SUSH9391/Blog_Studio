@@ -1,0 +1,12 @@
+.venv
+__pycache__
+.pytest_cache
+tests
+test.db
+pytest_*.txt
+*.log
+.zencoder
+.zenflow
+media
+alembic
+populate_images

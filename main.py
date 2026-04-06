@@ -93,10 +93,13 @@ async def log_server_errors(request: Request, call_next):
         print("---------------------------------\n")
         return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/media", StaticFiles(directory="media"), name="media")
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+app.mount("/media", StaticFiles(directory=os.path.join(BASE_DIR, "media")), name="media")
+
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(posts.router, prefix="/api/posts", tags=["posts"])
