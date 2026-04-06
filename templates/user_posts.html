@@ -113,11 +113,11 @@
             ${post.media_paths.map(media => {
                 const lower = media.toLowerCase();
                 if (lower.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
-                    return \`<img src="\${escapeHtml(media)}" class="img-fluid rounded border mb-2 d-block" style="max-height: 500px">\`;
+                    return `<img src="${escapeHtml(media)}" class="img-fluid rounded border mb-2 d-block" style="max-height: 500px">`;
                 } else if (lower.match(/\.(mp4|webm|ogg)$/)) {
-                    return \`<video src="\${escapeHtml(media)}" class="w-100 rounded border mb-2" controls style="max-height: 500px"></video>\`;
+                    return `<video src="${escapeHtml(media)}" class="w-100 rounded border mb-2" controls style="max-height: 500px"></video>`;
                 } else if (lower.match(/\.(mp3|wav)$/)) {
-                    return \`<audio src="\${escapeHtml(media)}" class="w-100 mb-2" controls></audio>\`;
+                    return `<audio src="${escapeHtml(media)}" class="w-100 mb-2" controls></audio>`;
                 }
                 return '';
             }).join('')}
