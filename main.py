@@ -97,7 +97,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
-app.mount("/media", StaticFiles(directory=os.path.join(BASE_DIR, "media")), name="media")
+
+media_path = os.path.join(BASE_DIR, "media")
+if os.path.exists(media_path):
+    app.mount("/media", StaticFiles(directory=media_path), name="media")
 
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
