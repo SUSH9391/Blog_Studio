@@ -4,7 +4,6 @@ from pathlib import Path
 from fastapi import UploadFile, HTTPException
 
 POST_MEDIA_DIR = Path("media/post_attachments")
-POST_MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
 ALLOWED_AUDIO_TYPES = {"audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3"}
@@ -23,6 +22,11 @@ def process_post_attachment(file: UploadFile) -> str:
     ext = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
     filename = f"{uuid.uuid4().hex}.{ext}" if ext else f"{uuid.uuid4().hex}"
     filepath = POST_MEDIA_DIR / filename
+    
+    try:
+        POST_MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass # Vercel read-only filesystem
 
     with open(filepath, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
