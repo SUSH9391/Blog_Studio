@@ -1,15 +1,35 @@
-# Supabase Migration TODO - COMPLETE ✅
+# Testing Implementation TODO
 
-## Steps Completed:
+## Plan Breakdown & Progress Tracking
 
-3. [x] Generate Alembic migration: `alembic revision --autogenerate -m "initial supabase tables"`
-4. [x] Apply migration: `alembic upgrade head`
-5. [x] Test app: `uv run uvicorn main:app --reload` (psycopg2-binary removed, server running)
-6. [x] Delete local blog.db
-7. [x] Verify tables in Supabase dashboard (users, posts, password_reset_tokens)
+### 1. [x] Create TODO.md (done)
 
-**Fixed:** Removed psycopg2-binary (asyncpg now works). main.py safe engine.dispose().
+### 2. [x] Create tests/ directory structure & files
+   - tests/conftest.py (fixtures: test_db, test_client, playwright page, seed user "sushmitha")
+   - tests/test_integration.py (TestClient: home, login success/fail, account auth)
+   - tests/test_e2e.py (Playwright: browser login flow, home posts)
 
-**Future:** alembic revision --autogenerate -m "changes" && alembic upgrade head
+### 3. [x] Implement fixtures in conftest.py
+   - Async test DB session (rollback/transaction)
+   - Override app deps for testing
+   - Seed test user via populate_db or direct insert
 
-App fully connected to Supabase! Visit http://localhost:8000
+### 4. [x] Write integration tests (test_integration.py)
+   - test_homepage_renders()
+   - test_login_success()
+   - test_login_failure()
+   - test_protected_account()
+
+### 5. [x] Write E2E tests (test_e2e.py)
+   - test_login_flow(page)
+   - test_homepage_loads(page)
+
+### 6. [x] Optional: Add StrictUndefined to main.py templates
+
+### 7. [x] Test run - Ready! Run manually: pytest tests/ -v
+   - pytest tests/ -v
+   - pytest tests/test_e2e.py --headed (server running)
+
+### 8. [] [x] Complete - attempt_completion
+
+Updated when steps complete.

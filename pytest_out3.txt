@@ -1,0 +1,355 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Lenovo\Desktop\Blog_Studio
+configfile: pytest.ini
+plugins: anyio-4.13.0, asyncio-1.3.0, base-url-2.1.0, playwright-0.7.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 5 items
+
+tests\test_integration.py F....                                          [100%]
+
+================================== FAILURES ===================================
+____________________________ test_homepage_renders ____________________________
+tests\test_integration.py:13: in test_homepage_renders
+    assert b'<article class="reddit-card"' in response.text  # Posts container
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: 'in <string>' requires string as left operand, not bytes
+---------------------------- Captured stderr setup ----------------------------
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA temp.table_info("users")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("posts")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA temp.table_info("posts")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("comments")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA temp.table_info("comments")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("password_reset_tokens")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:PRAGMA temp.table_info("password_reset_tokens")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO:sqlalchemy.engine.Engine:
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	username VARCHAR(50) NOT NULL, 
+	email VARCHAR(120) NOT NULL, 
+	password_hash VARCHAR(200) NOT NULL, 
+	image_file VARCHAR(200), 
+	PRIMARY KEY (id), 
+	UNIQUE (username), 
+	UNIQUE (email)
+)
+
+
+INFO:sqlalchemy.engine.Engine:[no key 0.00011s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_users_id ON users (id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00025s] ()
+INFO:sqlalchemy.engine.Engine:
+CREATE TABLE posts (
+	id INTEGER NOT NULL, 
+	title VARCHAR(100) NOT NULL, 
+	content TEXT NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	date_posted DATETIME NOT NULL, 
+	likes INTEGER DEFAULT '0' NOT NULL, 
+	upvotes INTEGER DEFAULT '0' NOT NULL, 
+	downvotes INTEGER DEFAULT '0' NOT NULL, 
+	media_paths JSON DEFAULT '[]' NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+INFO:sqlalchemy.engine.Engine:[no key 0.00022s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_posts_user_id ON posts (user_id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00033s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_posts_id ON posts (id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00041s] ()
+INFO:sqlalchemy.engine.Engine:
+CREATE TABLE password_reset_tokens (
+	id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	token_hash VARCHAR(64) NOT NULL, 
+	expires_at DATETIME NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id), 
+	UNIQUE (token_hash)
+)
+
+
+INFO:sqlalchemy.engine.Engine:[no key 0.00021s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_password_reset_tokens_id ON password_reset_tokens (id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00048s] ()
+INFO:sqlalchemy.engine.Engine:
+CREATE TABLE comments (
+	id INTEGER NOT NULL, 
+	content TEXT NOT NULL, 
+	date_posted DATETIME NOT NULL, 
+	post_id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	parent_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(post_id) REFERENCES posts (id) ON DELETE CASCADE, 
+	FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE, 
+	FOREIGN KEY(parent_id) REFERENCES comments (id) ON DELETE CASCADE
+)
+
+
+INFO:sqlalchemy.engine.Engine:[no key 0.00027s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_comments_id ON comments (id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00043s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_comments_post_id ON comments (post_id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00022s] ()
+INFO:sqlalchemy.engine.Engine:CREATE INDEX ix_comments_parent_id ON comments (parent_id)
+INFO:sqlalchemy.engine.Engine:[no key 0.00031s] ()
+INFO:sqlalchemy.engine.Engine:COMMIT
+----------------------------- Captured log setup ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2710 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("users")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA temp.table_info("users")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("posts")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA temp.table_info("posts")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("comments")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA temp.table_info("comments")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("password_reset_tokens")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA temp.table_info("password_reset_tokens")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	username VARCHAR(50) NOT NULL, 
+	email VARCHAR(120) NOT NULL, 
+	password_hash VARCHAR(200) NOT NULL, 
+	image_file VARCHAR(200), 
+	PRIMARY KEY (id), 
+	UNIQUE (username), 
+	UNIQUE (email)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00011s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_users_id ON users (id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00025s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+CREATE TABLE posts (
+	id INTEGER NOT NULL, 
+	title VARCHAR(100) NOT NULL, 
+	content TEXT NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	date_posted DATETIME NOT NULL, 
+	likes INTEGER DEFAULT '0' NOT NULL, 
+	upvotes INTEGER DEFAULT '0' NOT NULL, 
+	downvotes INTEGER DEFAULT '0' NOT NULL, 
+	media_paths JSON DEFAULT '[]' NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00022s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_posts_user_id ON posts (user_id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00033s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_posts_id ON posts (id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00041s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+CREATE TABLE password_reset_tokens (
+	id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	token_hash VARCHAR(64) NOT NULL, 
+	expires_at DATETIME NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id), 
+	UNIQUE (token_hash)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00021s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_password_reset_tokens_id ON password_reset_tokens (id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00048s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+CREATE TABLE comments (
+	id INTEGER NOT NULL, 
+	content TEXT NOT NULL, 
+	date_posted DATETIME NOT NULL, 
+	post_id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	parent_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(post_id) REFERENCES posts (id) ON DELETE CASCADE, 
+	FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE, 
+	FOREIGN KEY(parent_id) REFERENCES comments (id) ON DELETE CASCADE
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00027s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_comments_id ON comments (id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00043s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_comments_post_id ON comments (post_id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00022s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 CREATE INDEX ix_comments_parent_id ON comments (parent_id)
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00031s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2716 COMMIT
+---------------------------- Captured stderr call -----------------------------
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:SELECT count(*) AS count_1 
+FROM posts
+INFO:sqlalchemy.engine.Engine:[generated in 0.00024s] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('count_1',)
+DEBUG:sqlalchemy.engine.Engine:Row (0,)
+INFO:sqlalchemy.engine.Engine:SELECT posts.id, posts.title, posts.content, posts.user_id, posts.date_posted, posts.likes, posts.upvotes, posts.downvotes, posts.media_paths 
+FROM posts ORDER BY posts.date_posted DESC
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:[generated in 0.00029s] (10, 0)
+DEBUG:sqlalchemy.engine.Engine:Col ('id', 'title', 'content', 'user_id', 'date_posted', 'likes', 'upvotes', 'downvotes', 'media_paths')
+INFO:httpx:HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2710 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT count(*) AS count_1 
+FROM posts
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00024s] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('count_1',)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (0,)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT posts.id, posts.title, posts.content, posts.user_id, posts.date_posted, posts.likes, posts.upvotes, posts.downvotes, posts.media_paths 
+FROM posts ORDER BY posts.date_posted DESC
+ LIMIT ? OFFSET ?
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00029s] (10, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('id', 'title', 'content', 'user_id', 'date_posted', 'likes', 'upvotes', 'downvotes', 'media_paths')
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+-------------------------- Captured stderr teardown ---------------------------
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG:sqlalchemy.engine.Engine:Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG:sqlalchemy.engine.Engine:Row (1, 'username', 'VARCHAR(50)', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (2, 'email', 'VARCHAR(120)', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (3, 'password_hash', 'VARCHAR(200)', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (4, 'image_file', 'VARCHAR(200)', 0, None, 0)
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("posts")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG:sqlalchemy.engine.Engine:Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG:sqlalchemy.engine.Engine:Row (1, 'title', 'VARCHAR(100)', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (2, 'content', 'TEXT', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (3, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (4, 'date_posted', 'DATETIME', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (5, 'likes', 'INTEGER', 1, "'0'", 0)
+DEBUG:sqlalchemy.engine.Engine:Row (6, 'upvotes', 'INTEGER', 1, "'0'", 0)
+DEBUG:sqlalchemy.engine.Engine:Row (7, 'downvotes', 'INTEGER', 1, "'0'", 0)
+DEBUG:sqlalchemy.engine.Engine:Row (8, 'media_paths', 'JSON', 1, "'[]'", 0)
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("comments")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG:sqlalchemy.engine.Engine:Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG:sqlalchemy.engine.Engine:Row (1, 'content', 'TEXT', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (2, 'date_posted', 'DATETIME', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (3, 'post_id', 'INTEGER', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (4, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (5, 'parent_id', 'INTEGER', 0, None, 0)
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("password_reset_tokens")
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+DEBUG:sqlalchemy.engine.Engine:Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG:sqlalchemy.engine.Engine:Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG:sqlalchemy.engine.Engine:Row (1, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (2, 'token_hash', 'VARCHAR(64)', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (3, 'expires_at', 'DATETIME', 1, None, 0)
+DEBUG:sqlalchemy.engine.Engine:Row (4, 'created_at', 'DATETIME', 1, None, 0)
+INFO:sqlalchemy.engine.Engine:
+DROP TABLE comments
+INFO:sqlalchemy.engine.Engine:[no key 0.00023s] ()
+INFO:sqlalchemy.engine.Engine:
+DROP TABLE password_reset_tokens
+INFO:sqlalchemy.engine.Engine:[no key 0.00029s] ()
+INFO:sqlalchemy.engine.Engine:
+DROP TABLE posts
+INFO:sqlalchemy.engine.Engine:[no key 0.00029s] ()
+INFO:sqlalchemy.engine.Engine:
+DROP TABLE users
+INFO:sqlalchemy.engine.Engine:[no key 0.00028s] ()
+INFO:sqlalchemy.engine.Engine:COMMIT
+---------------------------- Captured log teardown ----------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2713 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2710 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("users")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (1, 'username', 'VARCHAR(50)', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (2, 'email', 'VARCHAR(120)', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (3, 'password_hash', 'VARCHAR(200)', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (4, 'image_file', 'VARCHAR(200)', 0, None, 0)
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("posts")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (1, 'title', 'VARCHAR(100)', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (2, 'content', 'TEXT', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (3, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (4, 'date_posted', 'DATETIME', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (5, 'likes', 'INTEGER', 1, "'0'", 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (6, 'upvotes', 'INTEGER', 1, "'0'", 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (7, 'downvotes', 'INTEGER', 1, "'0'", 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (8, 'media_paths', 'JSON', 1, "'[]'", 0)
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("comments")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (1, 'content', 'TEXT', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (2, 'date_posted', 'DATETIME', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (3, 'post_id', 'INTEGER', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (4, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (5, 'parent_id', 'INTEGER', 0, None, 0)
+INFO     sqlalchemy.engine.Engine:base.py:1846 PRAGMA main.table_info("password_reset_tokens")
+INFO     sqlalchemy.engine.Engine:base.py:1846 [raw sql] ()
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1549 Col ('cid', 'name', 'type', 'notnull', 'dflt_value', 'pk')
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (0, 'id', 'INTEGER', 1, None, 1)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (1, 'user_id', 'INTEGER', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (2, 'token_hash', 'VARCHAR(64)', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (3, 'expires_at', 'DATETIME', 1, None, 0)
+DEBUG    sqlalchemy.engine.Engine:cursor.py:1581 Row (4, 'created_at', 'DATETIME', 1, None, 0)
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+DROP TABLE comments
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00023s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+DROP TABLE password_reset_tokens
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00029s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+DROP TABLE posts
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00029s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 
+DROP TABLE users
+INFO     sqlalchemy.engine.Engine:base.py:1846 [no key 0.00028s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2716 COMMIT
+=========================== short test summary info ===========================
+FAILED tests/test_integration.py::test_homepage_renders - TypeError: 'in <str...
+========================= 1 failed, 4 passed in 1.93s =========================

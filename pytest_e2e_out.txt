@@ -1,0 +1,154 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Lenovo\Desktop\Blog_Studio
+configfile: pytest.ini
+plugins: anyio-4.13.0, asyncio-1.3.0, base-url-2.1.0, playwright-0.7.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 7 items
+
+tests\test_e2e.py FF                                                     [ 28%]
+tests\test_integration.py EEEEE                                          [100%]
+
+=================================== ERRORS ====================================
+___________________ ERROR at setup of test_homepage_renders ___________________
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:743: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:313: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:93: in run
+    raise RuntimeError(
+E   RuntimeError: Runner.run() cannot be called from a running event loop
+__________________ ERROR at setup of test_login_page_renders __________________
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:743: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:313: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:93: in run
+    raise RuntimeError(
+E   RuntimeError: Runner.run() cannot be called from a running event loop
+____________________ ERROR at setup of test_login_success _____________________
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:743: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:313: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:93: in run
+    raise RuntimeError(
+E   RuntimeError: Runner.run() cannot be called from a running event loop
+____________________ ERROR at setup of test_login_failure _____________________
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:743: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:313: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:93: in run
+    raise RuntimeError(
+E   RuntimeError: Runner.run() cannot be called from a running event loop
+______________ ERROR at setup of test_account_protected_no_token ______________
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:743: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:313: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:93: in run
+    raise RuntimeError(
+E   RuntimeError: Runner.run() cannot be called from a running event loop
+================================== FAILURES ===================================
+__________________________ test_login_flow[chromium] __________________________
+tests\test_e2e.py:8: in test_login_flow
+    page.goto("http://localhost:8000/login")
+.venv\Lib\site-packages\playwright\sync_api\_generated.py:9054: in goto
+    self._sync(
+.venv\Lib\site-packages\playwright\_impl\_page.py:552: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\playwright\_impl\_frame.py:153: in goto
+    await self._channel.send(
+.venv\Lib\site-packages\playwright\_impl\_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+.venv\Lib\site-packages\playwright\_impl\_connection.py:559: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.Error: Page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8000/login
+E   Call log:
+E     - navigating to "http://localhost:8000/login", waiting until "load"
+_________________________ test_homepage_ui[chromium] __________________________
+tests\test_e2e.py:22: in test_homepage_ui
+    page.goto("http://localhost:8000/")
+.venv\Lib\site-packages\playwright\sync_api\_generated.py:9054: in goto
+    self._sync(
+.venv\Lib\site-packages\playwright\_impl\_page.py:552: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\playwright\_impl\_frame.py:153: in goto
+    await self._channel.send(
+.venv\Lib\site-packages\playwright\_impl\_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+.venv\Lib\site-packages\playwright\_impl\_connection.py:559: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.Error: Page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8000/
+E   Call log:
+E     - navigating to "http://localhost:8000/", waiting until "load"
+============================== warnings summary ===============================
+tests/test_integration.py::test_homepage_renders
+tests/test_integration.py::test_login_page_renders
+tests/test_integration.py::test_login_success
+tests/test_integration.py::test_login_failure
+tests/test_integration.py::test_account_protected_no_token
+  C:\Users\Lenovo\Desktop\Blog_Studio\.venv\Lib\site-packages\pytest_asyncio\plugin.py:819: RuntimeWarning: An exception occurred during teardown of an asyncio.Runner. The reason is likely that you closed the underlying event loop in a test, which prevents the cleanup of asynchronous generators by the runner.
+  This warning will become an error in future versions of pytest-asyncio. Please ensure that your tests don't close the event loop. Here is the traceback of the exception triggered during teardown:
+  Traceback (most recent call last):
+    File "C:\Users\Lenovo\Desktop\Blog_Studio\.venv\Lib\site-packages\pytest_asyncio\plugin.py", line 817, in _scoped_runner
+      runner.__exit__(None, None, None)
+      ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+    File "C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 62, in __exit__
+      self.close()
+      ~~~~~~~~~~^^
+    File "C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 71, in close
+      loop.run_until_complete(loop.shutdown_asyncgens())
+      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 701, in run_until_complete
+      self._check_running()
+      ~~~~~~~~~~~~~~~~~~~^^
+    File "C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 639, in _check_running
+      raise RuntimeError(
+          'Cannot run the event loop while another loop is running')
+  RuntimeError: Cannot run the event loop while another loop is running
+  
+  
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_e2e.py::test_login_flow[chromium] - playwright._impl._error...
+FAILED tests/test_e2e.py::test_homepage_ui[chromium] - playwright._impl._erro...
+ERROR tests/test_integration.py::test_homepage_renders - RuntimeError: Runner...
+ERROR tests/test_integration.py::test_login_page_renders - RuntimeError: Runn...
+ERROR tests/test_integration.py::test_login_success - RuntimeError: Runner.ru...C:\Users\Lenovo\Desktop\Blog_Studio\.venv\Lib\site-packages\_pytest\unraisableexception.py:33: RuntimeWarning: coroutine '_wrap_asyncgen_fixture.<locals>._asyncgen_fixture_wrapper.<locals>.setup' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+
+ERROR tests/test_integration.py::test_login_failure - RuntimeError: Runner.ru...
+ERROR tests/test_integration.py::test_account_protected_no_token - RuntimeErr...
+=================== 2 failed, 5 warnings, 5 errors in 6.96s ===================
