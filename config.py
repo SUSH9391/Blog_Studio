@@ -37,6 +37,7 @@ class Settings(BaseSettings):
 
     supabase_url: str = ""
     supabase_anon_key: SecretStr = SecretStr("")
+    sentry_dsn: str = ""
 
     @field_validator("database_url", mode="before")
     @classmethod
