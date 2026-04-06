@@ -22,10 +22,15 @@ def process_profile_image(content: bytes, username: str) -> str:
 
         filename = f"{username}.jpg"
 
+        try:
+            supabase.storage.from_("avatar").remove([filename])
+        except Exception:
+            pass
+
         supabase.storage.from_("avatar").upload(
             path=filename,
             file=buffer.read(),
-            file_options={"content-type": "image/jpeg", "x-upsert": "true"}
+            file_options={"content-type": "image/jpeg"}
         )
 
     return filename
