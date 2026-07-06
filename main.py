@@ -87,7 +87,7 @@ async def log_server_errors(request: Request, call_next):
     try:
         return await call_next(request)
     except Exception as exc:
-        print(f"\n--- 💥 UNHANDLED EXCEPTION 💥 ---")
+        print(f"\n--- !!! UNHANDLED EXCEPTION !!! ---")
         print(f"Request URL: {request.url.path}")
         traceback.print_exc()
         print("---------------------------------\n")
