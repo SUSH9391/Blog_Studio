@@ -1,16 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
     <article class="reddit-card" data-post-id="{{ post.id }}">
-        <!-- Vote Column -->
-        <div class="vote-col">
-            <button class="vote-btn upvote" onclick="votePost({{ post.id }}, 'upvote')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4 3 15h6v5h6v-5h6z"/></svg>
-            </button>
-            <span class="vote-score" id="score-{{ post.id }}">{{ post.upvotes - post.downvotes }}</span>
-            <button class="vote-btn downvote" onclick="votePost({{ post.id }}, 'downvote')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m12 20 9-11h-6V4H9v5H3z"/></svg>
-            </button>
-        </div>
+
         <!-- Content Area -->
         <div class="card-content">
             <div class="card-meta">
@@ -35,7 +26,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <div class="action-bar pt-2 border-top mt-3">
+            <div class="action-bar">
                 <button class="action-btn">
                     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.82 1.62 5.3 4.14 6.89l-.26 3.03a1.002 1.002 0 0 0 1.5.95l3.4-1.9c1.02.28 2.08.43 3.22.43 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"></path></svg>
                     Comments
@@ -44,9 +35,23 @@
                     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 8h-4V4H6v4H2v2h4v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h4v-2h-4V8z"></path></svg>
                     Share
                 </button>
+                <button class="action-btn" onclick="votePost({{ post.id }}, 'upvote')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4 3 15h6v5h6v-5h6z"></path></svg>
+                    <span id="upvotes-{{ post.id }}">{{ post.upvotes }}</span>
+                </button>
+                <button class="action-btn" onclick="votePost({{ post.id }}, 'downvote')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m12 20 9-11h-6V4H9v5H3z"></path></svg>
+                    <span id="downvotes-{{ post.id }}">{{ post.downvotes }}</span>
+                </button>
                 <div id="postActions" class="d-none ms-auto d-flex gap-2">
-                    <button type="button" class="btn btn-sm btn-reddit-outline" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#editModal" style="color: var(--color-accent); border-color: var(--color-accent);">
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path></svg>
+                        Edit
+                    </button>
+                    <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" style="color: #dc3545; border-color: #dc3545;">
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                        Delete
+                    </button>
                 </div>
             </div>
 
@@ -64,7 +69,7 @@
                     <!-- Rendered by JS -->
                 </div>
             </div>
-            
+
         </div>
     </article>
 
@@ -179,7 +184,10 @@
             });
             if (res.ok) {
                 const data = await res.json();
-                document.getElementById(`score-${postId}`).textContent = data.upvotes - data.downvotes;
+                const upEl = document.getElementById(`upvotes-${postId}`);
+                if (upEl) upEl.textContent = data.upvotes;
+                const downEl = document.getElementById(`downvotes-${postId}`);
+                if (downEl) downEl.textContent = data.downvotes;
             }
         } catch (e) {
             console.error(e);

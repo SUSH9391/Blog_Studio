@@ -4,15 +4,7 @@
     <div id="postsContainer">
         {% for post in posts %}
             <article class="reddit-card" data-post-id="{{ post.id }}">
-                <div class="vote-col">
-                    <button class="vote-btn upvote" onclick="votePost({{ post.id }}, 'upvote')">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4 3 15h6v5h6v-5h6z"/></svg>
-                    </button>
-                    <span class="vote-score" id="score-{{ post.id }}">{{ post.upvotes - post.downvotes }}</span>
-                    <button class="vote-btn downvote" onclick="votePost({{ post.id }}, 'downvote')">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m12 20 9-11h-6V4H9v5H3z"/></svg>
-                    </button>
-                </div>
+
                 <div class="card-content">
                     <div class="card-meta">
                         <img class="card-avatar" src="{{ post.author.image_path }}" alt="avatar" loading="lazy">
@@ -46,6 +38,14 @@
                         <button class="action-btn" onclick="sharePost('{{ post.id }}')">
                             <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 8h-4V4H6v4H2v2h4v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h4v-2h-4V8z"></path></svg>
                             Share
+                        </button>
+                        <button class="action-btn" onclick="votePost({{ post.id }}, 'upvote')">
+                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4 3 15h6v5h6v-5h6z"></path></svg>
+                            <span id="upvotes-{{ post.id }}">{{ post.upvotes }}</span>
+                        </button>
+                        <button class="action-btn" onclick="votePost({{ post.id }}, 'downvote')">
+                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m12 20 9-11h-6V4H9v5H3z"></path></svg>
+                            <span id="downvotes-{{ post.id }}">{{ post.downvotes }}</span>
                         </button>
                     </div>
                 </div>
@@ -92,7 +92,10 @@
           });
           if (res.ok) {
               const data = await res.json();
-              document.getElementById(`score-${postId}`).textContent = data.upvotes - data.downvotes;
+              const upEl = document.getElementById(`upvotes-${postId}`);
+              if (upEl) upEl.textContent = data.upvotes;
+              const downEl = document.getElementById(`downvotes-${postId}`);
+              if (downEl) downEl.textContent = data.downvotes;
           }
       } catch (e) {
           console.error(e);
@@ -126,15 +129,7 @@
 
     return `
       <article class="reddit-card" data-post-id="${post.id}">
-        <div class="vote-col">
-            <button class="vote-btn upvote" onclick="votePost(${post.id}, 'upvote')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4 3 15h6v5h6v-5h6z"/></svg>
-            </button>
-            <span class="vote-score" id="score-${post.id}">${post.upvotes - post.downvotes}</span>
-            <button class="vote-btn downvote" onclick="votePost(${post.id}, 'downvote')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m12 20 9-11h-6V4H9v5H3z"/></svg>
-            </button>
-        </div>
+
         <div class="card-content">
             <div class="card-meta">
                 <img class="card-avatar" src="${escapeHtml(post.author.image_path)}" alt="avatar" loading="lazy">
@@ -156,6 +151,14 @@
                 <button class="action-btn" onclick="sharePost('${post.id}')">
                     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 8h-4V4H6v4H2v2h4v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h4v-2h-4V8z"></path></svg>
                     Share
+                </button>
+                <button class="action-btn" type="button" onclick="votePost(${post.id}, 'upvote')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4 3 15h6v5h6v-5h6z"></path></svg>
+                    <span id="upvotes-${post.id}">${post.upvotes || 0}</span>
+                </button>
+                <button class="action-btn" type="button" onclick="votePost(${post.id}, 'downvote')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m12 20 9-11h-6V4H9v5H3z"></path></svg>
+                    <span id="downvotes-${post.id}">${post.downvotes || 0}</span>
                 </button>
             </div>
         </div>

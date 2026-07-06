@@ -4,16 +4,16 @@
   --font-body: "Nunito", system-ui, -apple-system, sans-serif;
 
   /* Colors Light Mode (Reddit inspired) */
-  --color-bg-body: #DAE0E6;
+  --color-bg-body: #F8F9FA;
   --color-bg-content: #FFFFFF;
   --color-bg-nav: #FFFFFF;
-  --color-bg-hover: #F6F7F8;
+  --color-bg-hover: #F1F3F5;
   --color-bg-vote: #F8F9FA;
-  
+
   --color-text-primary: #1c1c1c;
   --color-text-secondary: #787C7E;
   --color-text-heading: #222222;
-  
+
   --color-border: #CCCCCC;
   --color-border-light: #EDEFF1;
   --color-border-hover: #898989;
@@ -27,28 +27,28 @@
   --color-nav-link-hover: #000000;
 
   /* Spacing & Sizing */
-  --spacing-nav-height: 48px;
+  --spacing-nav-height: 56px;
   --article-img-size: 20px; /* Smaller avatar for Reddit style */
   --account-img-size: 125px;
 }
 
 /* Dark Mode Colors */
 [data-bs-theme="dark"] {
-  --color-bg-body: #030303;
-  --color-bg-content: #1A1A1B;
-  --color-bg-nav: #1A1A1B;
-  --color-bg-hover: #272729;
-  --color-bg-vote: #1A1A1B;
-  
-  --color-text-primary: #D7DADC;
-  --color-text-secondary: #818384;
-  --color-text-heading: #D7DADC;
-  
-  --color-border: #343536;
-  --color-border-light: #343536;
-  --color-border-hover: #D7DADC;
+  --color-bg-body: #0F172A;
+  --color-bg-content: #1E293B;
+  --color-bg-nav: #1E293B;
+  --color-bg-hover: #334155;
+  --color-bg-vote: #1E293B;
 
-  --color-nav-link: #D7DADC;
+  --color-text-primary: #E2E8F0;
+  --color-text-secondary: #94A3B8;
+  --color-text-heading: #E2E8F0;
+
+  --color-border: #475569;
+  --color-border-light: #475569;
+  --color-border-hover: #CBD5E1;
+
+  --color-nav-link: #E2E8F0;
   --color-nav-link-hover: #FFFFFF;
 }
 
@@ -101,7 +101,6 @@ a:hover {
   display: flex;
   align-items: center;
   transition: border-color 0.2s, background-color 0.2s;
-  font-size: 14px;
 }
 .search-bar-stub:hover {
   border-color: var(--color-accent);
@@ -117,17 +116,18 @@ a:hover {
 .reddit-layout {
   display: flex;
   justify-content: center;
-  max-width: 1050px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
 }
 .reddit-main {
   width: 100%;
-  max-width: 640px;
+  max-width: 720px;
+  flex: 1 1 auto;
 }
 .reddit-sidebar {
-  width: 312px;
-  margin-left: 24px;
+  width: 300px;
+  margin-left: 20px;
   display: none;
 }
 @media (min-width: 992px) {
@@ -136,23 +136,95 @@ a:hover {
   }
 }
 
+/* Featured Post Section */
+.featured-post {
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+.featured-post-content {
+  flex: 1 1 300px;
+}
+.featured-post-title {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-heading);
+  margin-bottom: 12px;
+}
+.featured-post-title a {
+  color: var(--color-text-heading);
+  text-decoration: none;
+}
+.featured-post-title a:hover {
+  text-decoration: underline;
+}
+.featured-post-meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+.featured-post-avatar {
+  height: var(--article-img-size);
+  width: var(--article-img-size);
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+  border: 2px solid transparent;
+}
+.featured-post-avatar:hover {
+  border-color: var(--color-accent);
+  transform: scale(1.05);
+}
+.featured-post-body {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+.featured-post-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.featured-post-actions .btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
 /* Reddit Card Style */
 .reddit-card {
   background: var(--color-bg-content);
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 16px;
   margin-bottom: 16px;
   display: flex;
-  transition: border-color 0.15s ease;
+  width: 100%;
+  transition: border-color 0.15s ease, transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.reddit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: var(--color-border-hover);
+}
+.reddit-card:active {
+  transform: translateY(-2px);
 }
 
 /* Allow clicks on the card container (but keep inner links working) */
 .reddit-card { cursor: pointer; }
-
-.reddit-card:hover {
-  border-color: var(--color-border-hover);
-}
 
 /* Vote Column */
 .vote-col {
@@ -186,7 +258,7 @@ a:hover {
 
 /* Card Content */
 .card-content {
-  padding: 8px;
+  padding: 16px;
   flex-grow: 1;
 }
 .card-meta {
@@ -210,6 +282,11 @@ a:hover {
   border-radius: 50%;
   margin-right: 6px;
   object-fit: cover;
+  border: 2px solid transparent;
+}
+.card-avatar:hover {
+  border-color: var(--color-accent);
+  transform: scale(1.05);
 }
 .card-title {
   font-family: var(--font-heading);
@@ -231,32 +308,37 @@ a:hover {
   color: var(--color-text-primary);
   margin-bottom: 8px;
   white-space: pre-line;
-  /* Ensure post content never visually truncates */
   overflow: visible;
   text-overflow: clip;
 }
-
 
 /* Action Bar */
 .action-bar {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 .action-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-  padding: 6px 8px;
-  border-radius: 2px;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 9999px;
   cursor: pointer;
-  margin-right: 4px;
+  transition: all 0.2s ease;
+  height: 36px;
+  text-decoration: none;
 }
 .action-btn:hover {
   background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+  text-decoration: none;
 }
 .action-btn svg {
   margin-right: 6px;
@@ -288,11 +370,17 @@ a:hover {
   font-size: 14px;
   border: none;
   padding: 6px 16px;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .btn-reddit:hover {
   opacity: 0.9;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   text-decoration: none;
+}
+.btn-reddit:active {
+  transform: scale(0.98);
 }
 .btn-reddit-outline {
   background-color: transparent;
@@ -302,11 +390,17 @@ a:hover {
   font-weight: 700;
   font-size: 14px;
   padding: 6px 16px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .btn-reddit-outline:hover {
   background-color: rgba(79, 70, 229, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   text-decoration: none;
+}
+.btn-reddit-outline:active {
+  transform: scale(0.98);
 }
 
 /* Profile Specific */
@@ -321,11 +415,13 @@ a:hover {
   background-color: var(--color-bg-hover);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .form-control:focus {
   background-color: var(--color-bg-content);
   border-color: var(--color-accent);
-  box-shadow: none;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), inset 0 1px 2px rgba(0,0,0,0.05);
   color: var(--color-text-primary);
 }
 .modal-content {
@@ -350,7 +446,6 @@ a:hover {
     min-height: calc(100vh - 120px);
     width: 100%;
 }
-
 .auth-glass-card {
     background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(20px);
@@ -369,31 +464,26 @@ a:hover {
     gap: 10px;
     text-align: center;
 }
-
 [data-bs-theme="dark"] .auth-glass-card {
     background: rgba(40, 40, 40, 0.65);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
-
 .auth-glass-card h2 {
     font-weight: 700;
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
 }
-
 .auth-glass-card p.text-muted {
     font-size: 0.9rem;
     margin-bottom: 2rem;
 }
-
 .auth-input-group {
     position: relative;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
 }
-
 .auth-input-group svg {
     position: absolute;
     left: 1rem;
@@ -401,7 +491,6 @@ a:hover {
     width: 18px;
     height: 18px;
 }
-
 .auth-input-group input {
     background-color: var(--color-bg-hover);
     border: 1px solid transparent;
@@ -411,21 +500,18 @@ a:hover {
     color: var(--color-text-primary);
     transition: all 0.2s ease;
 }
-
 .auth-input-group input:focus {
     background-color: var(--color-bg-content);
     border: 1px solid var(--color-accent);
     outline: none;
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
 }
-
 .auth-input-group .toggle-password {
     position: absolute;
     right: 1rem;
     left: auto;
     cursor: pointer;
 }
-
 .auth-glass-card .btn-primary {
     border-radius: 12px;
     padding: 0.8rem;
@@ -434,7 +520,6 @@ a:hover {
     width: 100%;
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
-
 .auth-divider {
     display: flex;
     align-items: center;
@@ -443,27 +528,22 @@ a:hover {
     color: var(--color-text-secondary);
     font-size: 0.85rem;
 }
-
 .auth-divider::before, .auth-divider::after {
     content: '';
     flex: 1;
     border-bottom: 1px dashed var(--color-border);
 }
-
 .auth-divider::before {
     margin-right: .5em;
 }
-
 .auth-divider::after {
     margin-left: .5em;
 }
-
 .social-login-group {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
 }
-
 .social-btn {
     flex: 1;
     display: flex;
@@ -476,11 +556,9 @@ a:hover {
     transition: background 0.2s;
     cursor: pointer;
 }
-
 .social-btn:hover {
     background: var(--color-bg-hover);
 }
-
 .icon-top-container {
     display: inline-flex;
     justify-content: center;
@@ -496,7 +574,6 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
 }
-
 [data-bs-theme="dark"] .icon-top-container {
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
