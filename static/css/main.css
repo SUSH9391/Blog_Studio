@@ -227,7 +227,11 @@ a:hover {
   color: var(--color-text-primary);
   margin-bottom: 8px;
   white-space: pre-line;
+  /* Ensure post content never visually truncates */
+  overflow: visible;
+  text-overflow: clip;
 }
+
 
 /* Action Bar */
 .action-bar {
