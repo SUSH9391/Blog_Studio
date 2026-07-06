@@ -16,7 +16,7 @@ from database import get_db
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/token")
 
 
 def hash_password(password: str) -> str:
@@ -62,7 +62,8 @@ def verify_access_token(token: str) -> str | None:
             algorithms=[settings.algorithm],
             options={"require": ["exp", "sub"]},
         )
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        print(f"[auth] JWT invalid: {e}")
         return None
     else:
         return payload.get("sub")
@@ -72,6 +73,8 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> models.User:
+    # Minimal debug logging to help diagnose unexpected logouts
+    print(f"[auth] /me token-present={bool(token)} len={len(token) if token else 0}")
     user_id = verify_access_token(token)
     if user_id is None:
         raise HTTPException(
