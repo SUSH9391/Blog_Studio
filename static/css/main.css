@@ -146,6 +146,10 @@ a:hover {
   transition: border-color 0.15s ease;
   overflow: hidden;
 }
+
+/* Allow clicks on the card container (but keep inner links working) */
+.reddit-card { cursor: pointer; }
+
 .reddit-card:hover {
   border-color: var(--color-border-hover);
 }
